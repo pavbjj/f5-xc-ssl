@@ -1,0 +1,2 @@
+server-urls: https://f5-consult.console.ves.volterra.io/api
+p12-bundle: ./scripts/api_credential.p12
