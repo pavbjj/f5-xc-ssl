@@ -3,7 +3,7 @@
 ### Clear Text
 This tool allows of uploading SSL private and public key pair to F5 XC tenant. It uses unencrypted base64 keys. Those keys stay unencrypted at rest in the XC tenant.
 ### Blindfold
-This tool allows of uploading SSL private and public key pair to F5 XC tenant. It levreages vesctl for blindfolding the private keys . Private key is encrypted with vesctl before sending it to the tenant. The private key stays encrypted in the XC tenant. Please refer to: https://docs.cloud.f5.com/docs/how-to/advanced-security/blindfold-your-tls-certificates
+This tool allows of uploading SSL private and public key pair to F5 XC tenant. It leverages vesctl for blindfolding the private keys . Private key is encrypted with vesctl before sending it to the tenant. The private key stays encrypted in the XC tenant. Please refer to: https://docs.cloud.f5.com/docs/how-to/advanced-security/blindfold-your-tls-certificates
 ## Bash
 ### blindfold.sh
 This tool allows of uploading SSL private and public key pair to F5 XC tenant by levreaging vesctl and bash. It allows of looping through directory of private and public keys and once the match of the pair is found, the blindfolded private key is sent to the XC tenant.
