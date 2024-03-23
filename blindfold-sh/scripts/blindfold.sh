@@ -42,7 +42,7 @@ if $EVAL_CERT -eq "true" && $EVAL_KEY -eq "true"; then
 		# Encrypt TLS Private Key Using Blindfold
         	vesctl --config ./scripts/.vesconfig request secrets encrypt --policy-document ${XC_POLICY_DOCUMENT_PATH} --public-key ${XC_PUBLIC_KEY_PATH} ${PRIVATE_KEY} > $KEY_BLINDFOLD_SECRET
 
-        	# Encode the certificate with Base64
+        	# Check platform and encode the certificate with Base64
 		if [ "$(uname)" == "Linux" ]; then
 		cat ${CERTIFICATE} | base64 -w0 | awk '{print "string:///"$1}' > $BASE64_CERTIFICATE
 		elif [ "$(uname)" == "Darwin" ]; then
