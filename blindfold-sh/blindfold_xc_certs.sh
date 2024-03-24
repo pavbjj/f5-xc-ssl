@@ -95,7 +95,7 @@ for public_key in "$pub_dir"/*-pub.pem; do
         cert_name=$(basename "$public_key" | tr '.' '-')
         echo "Uploading certificate to Volterra..."
         echo "Uploading certificate to Volterra..." >> script.log
-        curl --location "https://$tenant.console.ves.volterra.io/api/config/namespaces/p-kuligowski/certificates" \
+        curl --location "https://$tenant.console.ves.volterra.io/api/config/namespaces/$namespace/certificates" \
             --cert-type P12 \
             --cert $p12_file:$VES_P12_PASSWORD \
             --header 'Content-Type: application/json' \
