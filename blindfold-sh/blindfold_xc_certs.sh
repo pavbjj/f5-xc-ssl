@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # F5 XC tenant details
-tenant="f5-consult"
-namespace="p-kuligowski"
+tenant="xc-tenant"
+namespace="app-namespace"
 p12_file="./scripts/api_credential.p12"
 export VES_P12_PASSWORD=""
 
