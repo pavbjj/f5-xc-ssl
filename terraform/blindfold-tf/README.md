@@ -16,3 +16,6 @@ https://gitlab.com/volterra.io/vesctl/blob/main/README.md
 ```
 terraform plan -var="lb_cert=./certs/cert.pem" -var="lb_key=./certs/privkey.pem"
 ```
+```
+terraform apply -var="lb_cert=./certs/cert.pem" -var="lb_key=./certs/privkey.pem"
+```
