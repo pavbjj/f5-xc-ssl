@@ -4,7 +4,7 @@
 tenant="f5-consult"
 namespace="p-kuligowski"
 p12_file="./scripts/api_credential.p12"
-VES_P12_PASSWORD=""
+export VES_P12_PASSWORD=""
 
 # Check if the XC creds .p12 file exists
 if [ -e "$p12_file" ]; then
