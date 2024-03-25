@@ -6,6 +6,14 @@ namespace="app-namespace"
 p12_file="./scripts/api_credential.p12"
 export VES_P12_PASSWORD=""
 
+# Check if is XC Cert password set
+if [ -n "$VES_P12_PASSWORD" ]; then
+    echo "VES_P12_PASSWORD set"
+else
+    echo "VES_P12_PASSWORD is empty"
+    exit 1
+fi
+
 # Check if the XC creds .p12 file exists
 if [ -e "$p12_file" ]; then
     echo "The .p12 file exists. Continuing..."
