@@ -92,7 +92,8 @@ for public_key in "$pub_dir"/*-pub.pem; do
         blindfold_private_key=$(./scripts/blindfold.sh "$public_key" "$private_key" > blindfolded.tmp)
         cert_url=$(jq -r .cert blindfolded.tmp)
         location=$(jq -r .blindfold blindfolded.tmp)
-        cert_name=$(basename "$public_key" | tr '.' '-')
+        # XC SSL object name
+        cert_name=$(basename "$public_key" | sed 's/-pub.pem//g' | sed 's/\./-/g')
         echo "Uploading certificate to Volterra..."
         echo "Uploading certificate to Volterra..." >> script.log
         curl --location "https://$tenant.console.ves.volterra.io/api/config/namespaces/$namespace/certificates" \
