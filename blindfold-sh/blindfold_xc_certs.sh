@@ -19,7 +19,15 @@ if [ -e "$p12_file" ]; then
     echo "The .p12 file exists. Continuing..."
 else
     echo "Error: The .p12 file does not exist. Exiting."
-    exit 1  # Exit the script with an error code
+    exit 1
+fi
+
+# Check if CSV file exists
+if [ -e "$csv_file" ]; then
+    echo "The CSV file exists. Continuing..."
+else
+    echo "Error: The CSV file does not exist. Exiting."
+    exit 1  
 fi
 
 # Setup vesctl
@@ -40,7 +48,12 @@ echo "Working directories created successfully."
 # Function to extract Common Name
 extract_cn() {
     cert_file=$1
-    openssl x509 -noout -subject -in "$cert_file" | sed -n 's/^subject.*CN *= *\([^ ]*\).*$/\1/p'
+    cn=$(openssl x509 -noout -subject -in "$cert_file" | sed -n 's/^subject.*CN *= *\([^ ]*\).*$/\1/p')
+    
+    # Replace all * with "wildcard" in the CN
+    cn="${cn//\*/wildcard}"
+    
+    echo "$cn"
 }
 
 # Function to check if the modulus of the private key matches the modulus of the corresponding public key
@@ -87,7 +100,6 @@ for pub_key_file in "$pub_dir"/*.pem; do
     fi
 done
 
-# Call Blindfold and vesctl
 for public_key in "$pub_dir"/*-pub.pem; do
     base_name=$(basename -s -pub.pem "$public_key")
     private_key="$pub_dir/${base_name}-key.pem"
@@ -104,6 +116,11 @@ for public_key in "$pub_dir"/*-pub.pem; do
         cert_name=$(basename "$public_key" | sed 's/-pub.pem//g' | sed 's/\./-/g')
         echo "Uploading certificate to Volterra..."
         echo "Uploading certificate to Volterra..." >> script.log
+        # Appending CSV
+        cn=$(extract_cn "$public_key" | sed 's/wildcard//g')
+        echo "Appending CSV..."
+        echo "Uploading certificate to Volterra..." >> script.log
+        echo "$cn,$cert_name,$namespace" >> certs.csv && awk 'BEGIN {FS=OFS=","} {print $1, $2, $3}' $csv_file
         curl --location "https://$tenant.console.ves.volterra.io/api/config/namespaces/$namespace/certificates" \
             --cert-type P12 \
             --cert $p12_file:$VES_P12_PASSWORD \
@@ -146,4 +163,3 @@ echo "Clearing blindfolded.tmp..." >> script.log
 > blindfolded.tmp
 echo "Script execution completed."
 echo "Script execution completed." >> script.log
-
