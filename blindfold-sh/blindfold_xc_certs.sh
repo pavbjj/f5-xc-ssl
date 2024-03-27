@@ -4,6 +4,7 @@
 tenant="xc-tenant"
 namespace="app-namespace"
 p12_file="./scripts/api_credential.p12"
+csv_file="./certs.csv"
 export VES_P12_PASSWORD=""
 
 # Check if XC Cert password is set
@@ -120,7 +121,7 @@ for public_key in "$pub_dir"/*-pub.pem; do
         cn=$(extract_cn "$public_key" | sed 's/wildcard//g')
         echo "Appending CSV..."
         echo "Uploading certificate to Volterra..." >> script.log
-        echo "$cn,$cert_name,$namespace" >> certs.csv && awk 'BEGIN {FS=OFS=","} {print $1, $2, $3}' $csv_file
+        echo "$cn,$cert_name,$namespace" >> $csv_file && awk 'BEGIN {FS=OFS=","} {print $1, $2, $3}' $csv_file
         curl --location "https://$tenant.console.ves.volterra.io/api/config/namespaces/$namespace/certificates" \
             --cert-type P12 \
             --cert $p12_file:$VES_P12_PASSWORD \
