@@ -79,7 +79,6 @@ for file in "$certs_dir"/*.pem "$certs_dir"/*.crt; do
     if grep -q "CERTIFICATE" "$file"; then
         cn=$(extract_cn "$file")
         cp "$file" "$pub_dir/${cn}-pub.pem"
-        echo "Public key moved: $file to $pub_dir/${cn}-pub.pem"
         echo "Public key moved: $file to $pub_dir/${cn}-pub.pem" >> script.log
     fi
 done
@@ -93,7 +92,6 @@ for pub_key_file in "$pub_dir"/*.pem; do
             if grep -q "PRIVATE" "$private_key_file"; then
                 if check_key_pair "$private_key_file" "$pub_key_file"; then
                     cp "$private_key_file" "$pub_dir/${cn}-key.pem"
-                    echo "Private key moved: $private_key_file to $pub_dir/${cn}-key.pem"
                     echo "Private key moved: $private_key_file to $pub_dir/${cn}-key.pem" >> script.log
                 fi
             fi
@@ -115,12 +113,11 @@ for public_key in "$pub_dir"/*-pub.pem; do
         location=$(jq -r .blindfold blindfolded.tmp)
         # XC SSL object name
         cert_name=$(basename "$public_key" | sed 's/-pub.pem//g' | sed 's/\./-/g')
-        echo "Uploading certificate to Volterra..."
         echo "Uploading certificate to Volterra..." >> script.log
         # Appending CSV
         cn=$(extract_cn "$public_key" | sed 's/wildcard//g')
         echo "Appending CSV..."
-        echo "Uploading certificate to Volterra..." >> script.log
+        echo "Uploading certificate to XC..." >> script.log
         echo "$cn,$cert_name,$namespace" >> $csv_file && awk 'BEGIN {FS=OFS=","} {print $1, $2, $3}' $csv_file
         curl --location "https://$tenant.console.ves.volterra.io/api/config/namespaces/$namespace/certificates" \
             --cert-type P12 \
@@ -149,18 +146,14 @@ for public_key in "$pub_dir"/*-pub.pem; do
                 }
             }'
         # Sleep to avoid XC API rate limits    
-        echo "Waiting before next iteration..."
         echo "Waiting before next iteration..." >> script.log
         sleep 3
     else
-        echo "Error: Matching private key not found for $base_name."
         echo "Error: Matching private key not found for $base_name." >> script.log
     fi
 done
 
 # Clear blindfolded.tmp
-echo "Clearing blindfolded.tmp..."
 echo "Clearing blindfolded.tmp..." >> script.log
 > blindfolded.tmp
-echo "Script execution completed."
 echo "Script execution completed." >> script.log
